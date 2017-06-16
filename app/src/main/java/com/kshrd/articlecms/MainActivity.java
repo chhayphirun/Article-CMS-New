@@ -1,8 +1,8 @@
 package com.kshrd.articlecms;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.kshrd.articlecms.entity.ArticleResponse;
+import com.kshrd.articlecms.popupdialog.EditArticleDialogFramentAdapter;
+import com.kshrd.articlecms.popupdialog.MyClickListenerUpdatePopup;
 import com.kshrd.articlecms.webservice.ArticleService;
 import com.kshrd.articlecms.webservice.ServiceGenerator;
 
@@ -24,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements TextWatcher, MyClickListener {
+public class MainActivity extends AppCompatActivity implements TextWatcher, MyClickListener,MyClickListenerUpdatePopup {
 
     @BindView(R.id.rvArticle)
     RecyclerView rvArticle;
@@ -104,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, MyCl
     public void afterTextChanged(Editable editable) {
 
     }
-
+    EditArticleDialogFramentAdapter editdialog;
     @Override
-    public void onClicked(int position, View view) {
+    public void onClicked(final int position, View view) {
         final ArticleResponse.Article article = articleAdapter.getArticle(position);
         PopupMenu popupMenu = new PopupMenu(MainActivity.this, view);
         popupMenu.inflate(R.menu.my_menu);
@@ -115,10 +117,31 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, MyCl
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.delete:
-                        Toast.makeText(MainActivity.this, String.valueOf(article.getId()), Toast.LENGTH_SHORT).show();
+                         ArticleService articleService1=ServiceGenerator.createService(ArticleService.class);
+                        Call<ArticleResponse> call2=articleService1.deleteArticles(article.getId());
+                        call2.enqueue(new Callback<ArticleResponse>() {
+                            @Override
+                            public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
+                                ArticleResponse article1=response.body();
+                            }
+
+                            @Override
+                            public void onFailure(Call<ArticleResponse> call, Throwable t) {
+                            }
+                        });
+                        articleAdapter.removteArticle(position);
+                        articleAdapter.notifyDataSetChanged();
+                        Toast.makeText(MainActivity.this,"Delete Successe", Toast.LENGTH_SHORT).show();
                         break;
+
+
                     case R.id.update:
-                        Toast.makeText(MainActivity.this, "Update", Toast.LENGTH_SHORT).show();
+                        editdialog=new EditArticleDialogFramentAdapter();
+                        editdialog.setPosition(position);
+                        editdialog.setArticle(article);
+//                         ArticleResponse.Article article1=editdialog.getArticle();
+                        editdialog.show(getSupportFragmentManager(),null);
+                        Toast.makeText(MainActivity.this, article.getId()+"", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 return true;
@@ -126,5 +149,24 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, MyCl
 
         });
         popupMenu.show();
+    }
+
+    @Override
+    public void onUpdateClicked(final int post, final ArticleResponse.Article article) {
+        Call<ArticleResponse.Article> call3=articleService.updateArticle(article.getId(),article);
+        call3.enqueue(new Callback<ArticleResponse.Article>() {
+            @Override
+            public void onResponse(Call<ArticleResponse.Article> call, Response<ArticleResponse.Article> response) {
+                articleAdapter.removteArticle(post);
+                articleAdapter.addArticleToRecycler(post,article);
+                articleAdapter.notifyDataSetChanged();
+                Log.e("ooooo","Position :"+post);
+            }
+
+            @Override
+            public void onFailure(Call<ArticleResponse.Article> call, Throwable t) {
+
+            }
+        });
     }
 }

@@ -2,22 +2,18 @@ package com.kshrd.articlecms.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
- * Created by pirang on 6/14/17.
+ * Created by LIER on 6/15/2017.
  */
 
-public class ArticleResponse {
+public class DeleteArticle {
 
     @SerializedName("CODE")
     private String code;
     @SerializedName("MESSAGE")
     private String message;
     @SerializedName("DATA")
-    private List<Article> articlelist;
-    @SerializedName("PAGINATION")
-    private Pagination pagination;
+    private Data data;
 
     public String getCode() {
         return code;
@@ -35,20 +31,12 @@ public class ArticleResponse {
         this.message = message;
     }
 
-    public List<Article> getArticlelist() {
-        return articlelist;
+    public Data getData() {
+        return data;
     }
 
-    public void setArticlelist(List<Article> articlelist) {
-        this.articlelist = articlelist;
-    }
-
-    public Pagination getPagination() {
-        return pagination;
-    }
-
-    public void setPagination(Pagination pagination) {
-        this.pagination = pagination;
+    public void setData(Data data) {
+        this.data = data;
     }
 
     public static class Author {
@@ -157,7 +145,7 @@ public class ArticleResponse {
         }
     }
 
-    public static class Article {
+    public static class Data {
         @SerializedName("ID")
         private int id;
         @SerializedName("TITLE")
@@ -166,12 +154,12 @@ public class ArticleResponse {
         private String description;
         @SerializedName("CREATED_DATE")
         private String createdDate;
-        @SerializedName("Author")
-        private int author;
+        @SerializedName("AUTHOR")
+        private Author author;
         @SerializedName("STATUS")
         private String status;
-        @SerializedName("Category")
-        private int category;
+        @SerializedName("CATEGORY")
+        private Category category;
         @SerializedName("IMAGE")
         private String image;
 
@@ -207,11 +195,11 @@ public class ArticleResponse {
             this.createdDate = createdDate;
         }
 
-        public int getAuthor() {
+        public Author getAuthor() {
             return author;
         }
 
-        public void setAuthor(int author) {
+        public void setAuthor(Author author) {
             this.author = author;
         }
 
@@ -223,11 +211,11 @@ public class ArticleResponse {
             this.status = status;
         }
 
-        public int getCategory() {
+        public Category getCategory() {
             return category;
         }
 
-        public void setCategory(int category) {
+        public void setCategory(Category category) {
             this.category = category;
         }
 
@@ -238,58 +226,5 @@ public class ArticleResponse {
         public void setImage(String image) {
             this.image = image;
         }
-    }
-
-    public static class Pagination {
-        @SerializedName("PAGE")
-        private int page;
-        @SerializedName("LIMIT")
-        private int limit;
-        @SerializedName("TOTAL_COUNT")
-        private int totalCount;
-        @SerializedName("TOTAL_PAGES")
-        private int totalPages;
-
-        public int getPage() {
-            return page;
-        }
-
-        public void setPage(int page) {
-            this.page = page;
-        }
-
-        public int getLimit() {
-            return limit;
-        }
-
-        public void setLimit(int limit) {
-            this.limit = limit;
-        }
-
-        public int getTotalCount() {
-            return totalCount;
-        }
-
-        public void setTotalCount(int totalCount) {
-            this.totalCount = totalCount;
-        }
-
-        public int getTotalPages() {
-            return totalPages;
-        }
-
-        public void setTotalPages(int totalPages) {
-            this.totalPages = totalPages;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "ArticleResponse{" +
-                "code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                ", articlelist=" + articlelist +
-                ", pagination=" + pagination +
-                '}';
     }
 }

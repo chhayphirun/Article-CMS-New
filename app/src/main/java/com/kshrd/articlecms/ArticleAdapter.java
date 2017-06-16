@@ -24,6 +24,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     List<ArticleResponse.Article> articleList;
     MyClickListener clickListener;
 
+    public List<ArticleResponse.Article> getArticleList() {
+        return articleList;
+    }
+
+    public void setArticleList(List<ArticleResponse.Article> articleList) {
+        this.articleList = articleList;
+    }
+
     public ArticleAdapter() {
         articleList = new ArrayList<>();
     }
@@ -44,6 +52,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
         ArticleResponse.Article article = articleList.get(position);
 
+        holder.tvid.setText("ID : "+String.valueOf(article.getId()));
         holder.tvTitle.setText(article.getTitle());
         holder.tvDescription.setText(article.getDescription());
     }
@@ -53,11 +62,18 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         return articleList.size();
     }
 
+    public void removteArticle(int position){
+        articleList.remove(position);
+    }
+    public void addArticleToRecycler(int postion,ArticleResponse.Article article){
+        articleList.add(postion,article);
+    }
 
     public void addMoreItems(List<ArticleResponse.Article> articleList){
         this.articleList.addAll(articleList);
         notifyDataSetChanged();
     }
+
 
     public void clearList(){
         this.articleList.clear();
@@ -75,6 +91,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
         @BindView(R.id.tvTitle)
         TextView tvTitle;
+
+        @BindView(R.id.tvId)
+        TextView tvid;
 
         @BindView(R.id.tvDescription)
         TextView tvDescription;
